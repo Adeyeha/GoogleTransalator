@@ -1,0 +1,9 @@
+python-dotenv
+python-jose
+fastapi
+python-multipart
+uvicorn
+fuzzywuzzy[speedup]
+googletrans==3.1.0a0
+
+
