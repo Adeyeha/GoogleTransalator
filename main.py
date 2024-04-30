@@ -29,7 +29,9 @@ app = FastAPI()
 
 origins = [
     "http://localhost",
-    "http://maya-ai-actl.azurewebsites.net"
+    "https://maya-ai-actl.azurewebsites.net",
+    "https://maya-actl-services.azurewebsites.net"
+
 ]
 
 app.add_middleware(
@@ -75,7 +77,7 @@ def search_closest_items(search_word, items, threshold=75) -> List:
 
 # Routes
 @app.get("/supported_languages", status_code=200, response_model=Languages)
-def get_supported_languages(
+def supported_languages(
     search : Annotated[Union[str,None], "A search word to finds the closest supported languages"],
     auth: bool = Depends(is_authenticated)
 ):
@@ -85,6 +87,18 @@ def get_supported_languages(
             return Languages(supported=search_closest_items(search, languages))
         
         # If no search word, return all supported languages
+        return Languages(supported=languages)
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Internal Server Error: {str(e)}",
+        )
+
+@app.get("/all_supported_languages", status_code=200, response_model=Languages)
+def all_supported_languages(
+    auth: bool = Depends(is_authenticated)
+):
+    try:
         return Languages(supported=languages)
     except Exception as e:
         raise HTTPException(
